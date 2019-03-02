@@ -311,7 +311,7 @@ trait AssertionsTrait
 
         if ($item->versions !== null) {
             foreach ($item->versions as $version) {
-                $this->assertInternalType('string', $version);
+                $this->assertIsString($version);
             }
         }
 
@@ -661,7 +661,7 @@ trait AssertionsTrait
     {
         $this->assertEntityProxy($specialFolder);
         $this->assertInstanceOf(SpecialFolderProxy::class, $specialFolder);
-        $this->assertInternalType('string', $specialFolder->name);
+        $this->assertIsString($specialFolder->name);
     }
 
     private function assertSharedProxy($shared)

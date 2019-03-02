@@ -38,7 +38,7 @@ class DriveProxyTest extends TestCase
         $driveItemResourceDefinition = $this->createMock(ResourceDefinitionInterface::class);
 
         $sut = new DriveProxy($graph, $drive, $driveItemResourceDefinition);
-        $this->assertInternalType('string', $sut->driveType);
+        $this->assertIsString($sut->driveType);
         $this->assertSame(DriveType::PERSONAL, $sut->driveType);
     }
 
@@ -125,7 +125,7 @@ class DriveProxyTest extends TestCase
 
         $sut    = new DriveProxy($graph, $drive, $driveItemResourceDefinition);
         $actual = $sut->items;
-        $this->assertInternalType('array', $actual);
+        $this->assertIsArray($actual);
         $this->assertCount(2, $actual);
 
         foreach ($actual as $item) {

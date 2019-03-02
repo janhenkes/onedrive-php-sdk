@@ -52,7 +52,7 @@ class UploadSessionProxyTest extends TestCase
             $driveItemResourceDefinition
         );
 
-        $this->assertInternalType('array', $sut->nextExpectedRanges);
+        $this->assertIsArray($sut->nextExpectedRanges);
         $this->assertSame(['0-1', '2-3'], $sut->nextExpectedRanges);
     }
 
@@ -72,7 +72,7 @@ class UploadSessionProxyTest extends TestCase
             $driveItemResourceDefinition
         );
 
-        $this->assertInternalType('string', $sut->uploadUrl);
+        $this->assertIsString('string', $sut->uploadUrl);
         $this->assertSame('http://uplo.ad/url', $sut->uploadUrl);
     }
 
@@ -213,14 +213,10 @@ class UploadSessionProxyTest extends TestCase
         $sut->complete();
     }
 
-    /**
-     * @expectedException \Exception
-     *
-     * @expectedExceptionMessage OneDrive did not create a drive item for the
-     *                           uploaded file
-     */
     public function testCompleteShouldThrowFileNotCreatedException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('OneDrive did not create a drive item for the uploaded file');
         $item = $this->createMock(DriveItem::class);
         $item->method('getId')->willReturn('123abc');
 
@@ -257,14 +253,10 @@ class UploadSessionProxyTest extends TestCase
         $sut->complete();
     }
 
-    /**
-     * @expectedException \Exception
-     *
-     * @expectedExceptionMessage Unexpected status code produced by 'PUT
-     *                           http://uplo.ad/url': 503
-     */
     public function testCompleteShouldThrowUnexpectedStatusCodeException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Unexpected status code produced by \'PUT http://uplo.ad/url\': 503');
         $item = $this->createMock(DriveItem::class);
         $item->method('getId')->willReturn('123abc');
 
