@@ -679,11 +679,19 @@ class DriveItemProxy extends BaseItemProxy
             ->getBodyParameterDefinitions()
             ->buildOptions($options);
 
+        $body = array_replace_recursive([
+            'item' => [
+                'file' => [
+                    '@odata.type' => 'microsoft.graph.file',
+                ],
+            ],
+        ], $bodyParams);
+var_dump($body);
         try {
             $response = $this
                 ->graph
                 ->createRequest('POST', $endpoint)
-                ->attachBody($bodyParams)
+                ->attachBody($body)
                 ->execute();
 
             $status = $response->getStatus();

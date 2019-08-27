@@ -423,7 +423,7 @@ class DriveItemProxyTest extends TestCase
                 'Test file',
                 $string,
                 [
-                    'contentType' => 'text/plain',
+                    'type' => 'text/plain',
                     'description' => 'Test description',
                 ]
             );
@@ -435,6 +435,7 @@ class DriveItemProxyTest extends TestCase
             $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
             $this->assertEquals('Test file', $driveItem->name);
             $this->assertEquals('Test description', $driveItem->description);
+            $this->assertEquals('text/plain', $driveItem->file->mimeType);
             $this->assertEquals($string, $driveItem->content);
             $this->assertFileProxy($driveItem->file);
         });
@@ -481,7 +482,7 @@ class DriveItemProxyTest extends TestCase
                 $string,
                 [
                     'conflictBehavior' => ConflictBehavior::RENAME,
-                    'contentType'      => 'text/plain',
+                    'type'             => 'text/plain',
                     'description'      => 'Test description',
                 ]
             );
@@ -493,6 +494,7 @@ class DriveItemProxyTest extends TestCase
             $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
             $this->assertEquals('Test file 1', $driveItem->name);
             $this->assertEquals('Test description', $driveItem->description);
+            $this->assertEquals('text/plain', $driveItem->file->mimeType);
             $this->assertEquals($string, $driveItem->content);
             $this->assertFileProxy($driveItem->file);
         });
@@ -514,7 +516,7 @@ class DriveItemProxyTest extends TestCase
                 $string,
                 [
                     'conflictBehavior' => ConflictBehavior::REPLACE,
-                    'contentType'      => 'text/plain',
+                    'type'             => 'text/plain',
                     'description'      => 'Test description',
                 ]
             );
@@ -526,6 +528,7 @@ class DriveItemProxyTest extends TestCase
             $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
             $this->assertEquals('Test file', $driveItem->name);
             $this->assertEquals('Test description', $driveItem->description);
+            $this->assertEquals('text/plain', $driveItem->file->mimeType);
             $this->assertEquals($string, $driveItem->content);
             $this->assertFileProxy($driveItem->file);
         });
@@ -543,7 +546,7 @@ class DriveItemProxyTest extends TestCase
                 'Test file',
                 $stream,
                 [
-                    'contentType' => 'text/plain',
+                    'type'        => 'text/plain',
                     'description' => 'Test description',
                 ]
             );
@@ -555,6 +558,7 @@ class DriveItemProxyTest extends TestCase
             $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
             $this->assertEquals('Test file', $driveItem->name);
             $this->assertEquals('Test description', $driveItem->description);
+            $this->assertEquals('text/plain', $driveItem->file->mimeType);
             $this->assertEquals($content, $driveItem->content);
             $this->assertFileProxy($driveItem->file);
 
@@ -613,7 +617,7 @@ class DriveItemProxyTest extends TestCase
                 $stream,
                 [
                     'conflictBehavior' => ConflictBehavior::RENAME,
-                    'contentType'      => 'text/plain',
+                    'type'             => 'text/plain',
                     'description'      => 'Test description',
                 ]
             );
@@ -625,6 +629,7 @@ class DriveItemProxyTest extends TestCase
             $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
             $this->assertEquals('Test file 1', $driveItem->name);
             $this->assertEquals('Test description', $driveItem->description);
+            $this->assertEquals('text/plain', $driveItem->file->mimeType);
             $this->assertEquals($content, $driveItem->content);
             $this->assertFileProxy($driveItem->file);
 
@@ -652,7 +657,7 @@ class DriveItemProxyTest extends TestCase
                 $stream,
                 [
                     'conflictBehavior' => ConflictBehavior::REPLACE,
-                    'contentType'      => 'text/plain',
+                    'type'             => 'text/plain',
                     'description'      => 'Test description',
                 ]
             );
@@ -664,6 +669,7 @@ class DriveItemProxyTest extends TestCase
             $this->assertEquals($sandbox->id, $driveItem->parentReference->id);
             $this->assertEquals('Test file', $driveItem->name);
             $this->assertEquals('Test description', $driveItem->description);
+            $this->assertEquals('text/plain', $driveItem->file->mimeType);
             $this->assertEquals($content, $driveItem->content);
             $this->assertFileProxy($driveItem->file);
 

@@ -157,6 +157,10 @@ class Onedrive
                                 new HierarchicalInjector(['item', 'description']),
                                 $scalarSerializer
                             ),
+                            'type' => new BodyParameterDefinition(
+                                new HierarchicalInjector(['item', 'file', 'mimeType']),
+                                $scalarSerializer
+                            ),
                         ]),
                         new ParameterDefinitionCollection($parameterBuilder, []),
                         new ParameterDefinitionCollection($parameterBuilder, [])
