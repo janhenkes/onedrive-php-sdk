@@ -1,7 +1,7 @@
 {
-    "name": "krizalys/onedrive-php-sdk",
+    "name": "janhenkes/onedrive-php-sdk",
     "description": "OneDrive SDK for PHP.",
-    "homepage": "https://github.com/krizalys/onedrive-php-sdk",
+    "homepage": "https://github.com/janhenkes/onedrive-php-sdk",
     "license": "BSD-3-Clause",
     "prefer-stable": true,
     "keywords": [

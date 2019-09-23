@@ -102,6 +102,12 @@ class Client
     private $_state;
 
     /**
+     * @var string
+     *      The Microsoft Tenant Id
+     */
+    private $tenantId;
+
+    /**
      * Constructor.
      *
      * @param string $clientId
@@ -191,6 +197,9 @@ class Client
         $this->httpClient        = $httpClient;
         $this->serviceDefinition = $serviceDefinition;
 
+        $this->tenantId = array_key_exists( 'tenant_id', $options ) ?
+            $options['tenant_id'] : 'common';
+
         $this->_state = array_key_exists('state', $options)
             ? $options['state'] : (object) [
                 'redirect_uri' => null,
@@ -279,7 +288,7 @@ class Client
         // redirected to the redirect URI, with a code passed in the query
         // string (the name of the variable is "code"). This is suitable for
         // PHP.
-        return self::AUTH_URL . "?$query";
+        return preg_replace( '/common/', $this->tenantId, self::AUTH_URL ) . "?$query";
     }
 
     /**
@@ -368,7 +377,7 @@ class Client
         ];
 
         $response = $this->httpClient->post(
-            self::TOKEN_URL,
+            preg_replace( '/common/', $this->tenantId, self::TOKEN_URL ),
             ['form_params' => $values]
         );
 
@@ -418,7 +427,7 @@ class Client
         ];
 
         $response = $this->httpClient->post(
-            self::TOKEN_URL,
+            preg_replace( '/common/', $this->tenantId, self::TOKEN_URL ),
             ['form_params' => $values]
         );
 
