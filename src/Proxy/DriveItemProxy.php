@@ -7,10 +7,12 @@
  * that was distributed with this source code.
  *
  * @author    Christophe Vidal
- * @copyright 2008-2019 Christophe Vidal (http://www.krizalys.com)
+ * @copyright 2008-2023 Christophe Vidal (http://www.krizalys.com)
  * @license   https://opensource.org/licenses/BSD-3-Clause 3-Clause BSD License
  * @link      https://github.com/krizalys/onedrive-php-sdk
  */
+
+declare(strict_types=1);
 
 namespace Krizalys\Onedrive\Proxy;
 
@@ -494,20 +496,13 @@ class DriveItemProxy extends BaseItemProxy
      * options, for example:
      *
      * ```php
-     * $driveItem->upload(
-     *     'file.txt',
-     *     'Some content',
-     *     ['contentType' => 'text/plain']
-     * );
+     * $driveItem->upload('file.txt', 'Some content');
      * // => Text file 'file.txt' created under $driveItem.
      *
      * $childDriveItem1 = $driveItem->upload(
      *     'file.txt',
      *     'Some other content',
-     *     [
-     *         'conflictBehavior' => ConflictBehavior::RENAME,
-     *         'contentType'      => 'text/plain',
-     *     ]
+     *     ['conflictBehavior' => ConflictBehavior::RENAME]
      * );
      * // => Text file 'file 1.txt' created under $driveItem.
      * ```
@@ -519,8 +514,6 @@ class DriveItemProxy extends BaseItemProxy
      * @param mixed[string] $options
      *        The options. Supported options:
      *          - `'conflictBehavior'` *(string)*: the conflict behavior ;
-     *          - `'contentType'` *(string)*: the MIME type of the uploaded
-     *            file.
      *
      * @return \Krizalys\Onedrive\Proxy\DriveItemProxy
      *         The drive item created.
@@ -536,13 +529,6 @@ class DriveItemProxy extends BaseItemProxy
      */
     public function upload($name, $content, array $options = [])
     {
-        if (array_key_exists('Content-Type', $options)) {
-            $message = 'The \'Content-Type\' option is deprecated and will'
-                . ' be removed in version 3; use \'contentType\' instead';
-
-            @trigger_error($message, E_USER_DEPRECATED);
-        }
-
         $opDef = $this->resourceDefinition
             ->getResourceDefinition('content')
             ->getOperationDefinition('put');
@@ -567,7 +553,7 @@ class DriveItemProxy extends BaseItemProxy
 
         $body = $content instanceof Stream ?
             $content
-            : Psr7\stream_for($content);
+            : Psr7\Utils::streamFor($content);
 
         try {
             $response = $this
@@ -625,20 +611,13 @@ class DriveItemProxy extends BaseItemProxy
      * For example:
      *
      * ```php
-     * $driveItem->upload(
-     *     'file.txt',
-     *     'Some content',
-     *     ['contentType' => 'text/plain']
-     * );
+     * $driveItem->upload('file.txt', 'Some content');
      * // => Text file 'file.txt' created under $driveItem.
      *
      * $uploadSession1 = $driveItem->startUpload(
      *     'file.txt',
      *     'Some other content',
-     *     [
-     *         'conflictBehavior' => ConflictBehavior::RENAME,
-     *         'type'             => 'text/plain',
-     *     ]
+     *     ['conflictBehavior' => ConflictBehavior::RENAME]
      * );
      *
      * $childDriveItem = $uploadSession1->complete();

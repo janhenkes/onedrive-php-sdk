@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Test\Unit\Krizalys\Onedrive\Proxy;
 
 use Krizalys\Onedrive\Proxy\FolderProxy;
@@ -16,10 +18,14 @@ class FolderProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $folder = $this->createMock(Folder::class);
-        $folder->method('getChildCount')->willReturn(1);
+
+        $folder
+            ->expects($this->atLeastOnce())
+            ->method('getChildCount')
+            ->willReturn(1);
 
         $sut = new FolderProxy($graph, $folder);
-        $this->assertInternalType('int', $sut->childCount);
+        $this->assertIsInt($sut->childCount);
         $this->assertSame(1, $sut->childCount);
     }
 
@@ -28,10 +34,18 @@ class FolderProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $folderView = $this->createMock(FolderView::class);
-        $folderView->method('getSortBy')->willReturn('sort_by');
+
+        $folderView
+            ->expects($this->atLeastOnce())
+            ->method('getSortBy')
+            ->willReturn('sort_by');
 
         $folder = $this->createMock(Folder::class);
-        $folder->method('getView')->willReturn($folderView);
+
+        $folder
+            ->expects($this->atLeastOnce())
+            ->method('getView')
+            ->willReturn($folderView);
 
         $sut = new FolderProxy($graph, $folder);
         $this->assertInstanceOf(FolderViewProxy::class, $sut->view);

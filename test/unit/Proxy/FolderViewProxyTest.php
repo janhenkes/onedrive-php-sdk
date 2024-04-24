@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Test\Unit\Krizalys\Onedrive\Proxy;
 
 use Krizalys\Onedrive\Proxy\FolderViewProxy;
@@ -14,10 +16,14 @@ class FolderViewProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $folderView = $this->createMock(FolderView::class);
-        $folderView->method('getSortBy')->willReturn('sort_by');
+
+        $folderView
+            ->expects($this->atLeastOnce())
+            ->method('getSortBy')
+            ->willReturn('sort_by');
 
         $sut = new FolderViewProxy($graph, $folderView);
-        $this->assertInternalType('string', $sut->sortBy);
+        $this->assertIsString($sut->sortBy);
         $this->assertSame('sort_by', $sut->sortBy);
     }
 
@@ -26,10 +32,14 @@ class FolderViewProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $folderView = $this->createMock(FolderView::class);
-        $folderView->method('getSortOrder')->willReturn('sort_order');
+
+        $folderView
+            ->expects($this->atLeastOnce())
+            ->method('getSortOrder')
+            ->willReturn('sort_order');
 
         $sut = new FolderViewProxy($graph, $folderView);
-        $this->assertInternalType('string', $sut->sortOrder);
+        $this->assertIsString($sut->sortOrder);
         $this->assertSame('sort_order', $sut->sortOrder);
     }
 
@@ -38,10 +48,14 @@ class FolderViewProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $folderView = $this->createMock(FolderView::class);
-        $folderView->method('getViewType')->willReturn('view_type');
+
+        $folderView
+            ->expects($this->atLeastOnce())
+            ->method('getViewType')
+            ->willReturn('view_type');
 
         $sut = new FolderViewProxy($graph, $folderView);
-        $this->assertInternalType('string', $sut->viewType);
+        $this->assertIsString($sut->viewType);
         $this->assertSame('view_type', $sut->viewType);
     }
 }

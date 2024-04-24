@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Test\Unit\Krizalys\Onedrive\Parameter;
 
 use Krizalys\Onedrive\Parameter\ParameterBuilderInterface;
@@ -12,9 +14,12 @@ class ParameterDefinitionCollectionTest extends TestCase
     {
         $parameterBuilder = $this->createMock(ParameterBuilderInterface::class);
 
-        $parameterBuilder->method('build')->willReturnCallback(function (array $_, $options) {
-            return $options;
-        });
+        $parameterBuilder
+            ->expects($this->atLeastOnce())
+            ->method('build')
+            ->willReturnCallback(function (array $_, $options) {
+                return $options;
+            });
 
         $sut = new ParameterDefinitionCollection($parameterBuilder, []);
 

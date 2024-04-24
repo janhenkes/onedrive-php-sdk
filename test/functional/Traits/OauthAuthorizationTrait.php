@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Test\Functional\Krizalys\Onedrive\Traits;
 
 use Facebook\WebDriver\WebDriver;
@@ -10,7 +12,7 @@ trait OauthAuthorizationTrait
 {
     use MicrosoftOauthAuthenticationTrait;
     use ProcessTrait;
-    use WebDriverTrait;
+    use WebdriverTrait;
 
     private static $scopes = [
         'files.read',
@@ -24,32 +26,50 @@ trait OauthAuthorizationTrait
 
     private static $maxRedirectPort = 49151;
 
-    private static $redirectUriTemplate = 'http://localhost:%d/';
+    private static $redirectUriTemplate = '%s://%s:%d/';
 
-    private static $webDriverBaseUriTemplate = 'http://localhost:%d/wd/hub';
-
-    private static $webDriverBaseUriPort = 4444;
+    private static $webdriverBaseUriTemplate = '%s://%s:%d/wd/hub';
 
     private static function authorize(Client $client, $username, $password, $state = null)
     {
+        $redirectUriAddr        = self::getConfig('REDIRECT_URI_ADDR');
+        $redirectUriScheme      = self::getConfig('REDIRECT_URI_SCHEME');
+        $redirectUriHost        = self::getConfig('REDIRECT_URI_HOST');
+        $webdriverBaseUriScheme = self::getConfig('WEBDRIVER_BASE_URI_SCHEME');
+        $webdriverBaseUriHost   = self::getConfig('WEBDRIVER_BASE_URI_HOST');
+        $webdriverBaseUriPort   = self::getConfig('WEBDRIVER_BASE_URI_PORT');
+
         // Random registered port.
         $redirectUriPort = rand(self::$minRedirectPort, self::$maxRedirectPort);
 
-        $redirectUri             = sprintf(self::$redirectUriTemplate, $redirectUriPort);
+        $redirectUri = sprintf(
+            self::$redirectUriTemplate,
+            $redirectUriScheme,
+            $redirectUriHost,
+            $redirectUriPort
+        );
+
         $authorizationRequestUri = $client->getLogInUrl(self::$scopes, $redirectUri, $state);
-        $webDriverBaseUri        = sprintf(self::$webDriverBaseUriTemplate, self::$webDriverBaseUriPort);
-        $root                    = dirname(__DIR__);
+
+        $webdriverBaseUri = sprintf(
+            self::$webdriverBaseUriTemplate,
+            $webdriverBaseUriScheme,
+            $webdriverBaseUriHost,
+            $webdriverBaseUriPort
+        );
+
+        $root = dirname(__DIR__);
 
         $command = [
             'php',
-            '-S',
-            sprintf('localhost:%d', $redirectUriPort),
-            sprintf('%s/router.php', $root),
+            '--server',
+            sprintf('%s:%d', $redirectUriAddr, $redirectUriPort),
+            sprintf('%s/Router.php', $root),
         ];
 
-        return self::withProcess($command, function (Process $process) use ($webDriverBaseUri, $authorizationRequestUri, $redirectUri, $username, $password) {
-            self::withWebDriver($webDriverBaseUri, function (WebDriver $webDriver) use ($authorizationRequestUri, $redirectUri, $username, $password) {
-                self::authenticate($webDriver, $authorizationRequestUri, $redirectUri, $username, $password);
+        return self::withProcess($command, function (Process $process) use ($webdriverBaseUri, $authorizationRequestUri, $redirectUri, $username, $password) {
+            self::withWebdriver($webdriverBaseUri, function (WebDriver $webdriver) use ($authorizationRequestUri, $redirectUri, $username, $password) {
+                self::authenticate($webdriver, $authorizationRequestUri, $redirectUri, $username, $password);
             });
 
             foreach ($process as $type => $buffer) {
@@ -75,7 +95,7 @@ trait OauthAuthorizationTrait
             $line = json_decode($line, true);
 
             if ($line !== null || json_last_error() == JSON_ERROR_NONE) {
-                 return $line;
+                return $line;
             }
         }
 

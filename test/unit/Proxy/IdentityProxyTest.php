@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Test\Unit\Krizalys\Onedrive\Proxy;
 
 use Krizalys\Onedrive\Proxy\IdentityProxy;
@@ -14,10 +16,14 @@ class IdentityProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $identity = $this->createMock(Identity::class);
-        $identity->method('getDisplayName')->willReturn('Display Name');
+
+        $identity
+            ->expects($this->atLeastOnce())
+            ->method('getDisplayName')
+            ->willReturn('Display Name');
 
         $sut = new IdentityProxy($graph, $identity);
-        $this->assertInternalType('string', $sut->displayName);
+        $this->assertIsString($sut->displayName);
         $this->assertSame('Display Name', $sut->displayName);
     }
 }

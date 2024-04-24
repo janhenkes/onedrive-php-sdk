@@ -1,8 +1,104 @@
 Change log
 ==========
 
-[Unreleased][unreleased]
-------------------------
+[3.2.0] - 2023-03-31
+--------------------
+
+### Added
+
+- Support for PHP 8.1.
+- Support for PHP 8.2.
+
+[3.1.1] - 2023-03-29
+--------------------
+
+### Fixed
+
+- Fixed the incorrect variable name $queryStringParameterDefinition in class `\Krizalys\Onedrive\Definition\OperationDefinition` (#109).
+- The functional test suite was not working after a change in OneDrive
+authentication flow.
+
+[3.1.0] - 2021-04-18
+--------------------
+
+### Added
+
+- Support for Guzzle 7.
+
+### Fixed
+
+- Functional tests with group or site requirements use group or site ID from the
+configuration and are skipped if not set.
+
+[3.0.0] - 2021-02-12
+--------------------
+
+### Added
+
+- Support for PHP 8.0.
+- Paratest to run test suites in parallel.
+- `ClientState` to pass existing state (redirect URI & OAuth token) to a client
+being instantiated.
+
+### Changed
+
+- Upgraded to PHPUnit 9.
+- Using strict typing for all PHP files.
+
+### Removed
+
+- Support for PHP 5.6, PHP 7.0, PHP 7.1, and PHP 7.2.
+- V1 API.
+- V2 API.
+
+[2.7.0] - 2021-02-12
+--------------------
+
+### Changed
+
+- Unified PHPUnit configuration files into a single configuration.
+- Refactoring.
+
+[2.6.0] - 2020-02-02
+--------------------
+
+### Added
+
+- Coding style documentation.
+- Support for PHP 7.4.
+
+### Changed
+
+- Reduced unit tests interdependencies.
+- Revised the CONTRIBUTING file and now using it as pull request template.
+- Removed unused stubbed methods.
+- `\Krizalys\Onedrive\Proxy\DriveItemProxy::startUpload()`: The `'type'` option
+  is ignored by OneDrive & reports a notice. Omit this option.
+- `\Krizalys\Onedrive\Proxy\DriveItemProxy::upload()`: The `'contentType'`
+  option is ignored by OneDrive & reports a notice. Omit this option.
+- Updated Krizalys\Onedrive\Proxy\ImageProxy.
+- Updated Krizalys\Onedrive\Proxy\PhotoProxy.
+- Updated Krizalys\Onedrive\Proxy\AudioProxy.
+- Updated Krizalys\Onedrive\Proxy\VideoProxy.
+- Updated dependency on facebook/webdriver to php-webdriver/webdriver.
+
+[2.5.1] - 2019-10-06
+--------------------
+
+### Changed
+
+- Using full error reporting when running test suites.
+- Removed the use of the Yoda style.
+- Refactored functional tests.
+
+### Fixed
+
+- All PHP notices.
+- Passing a state via `Krizalys\Onedrive\Client::__construct()`' `'state'`
+  option did not set properly the Microsoft Graph access token.
+
+[2.5.0] - 2019-09-23
+--------------------
 
 ### Added
 
@@ -296,7 +392,15 @@ as the official PHP Docker image.
 
 - Support for SSL.
 
-[unreleased]:    https://github.com/krizalys/onedrive-php-sdk/compare/2.4.2...HEAD
+[unreleased]:    https://github.com/krizalys/onedrive-php-sdk/compare/3.2.0...HEAD
+[3.2.0]:         https://github.com/krizalys/onedrive-php-sdk/compare/3.1.1...3.2.0
+[3.1.1]:         https://github.com/krizalys/onedrive-php-sdk/compare/3.1.0...3.1.1
+[3.1.0]:         https://github.com/krizalys/onedrive-php-sdk/compare/3.0.0...3.1.0
+[3.0.0]:         https://github.com/krizalys/onedrive-php-sdk/compare/2.7.0...3.0.0
+[2.7.0]:         https://github.com/krizalys/onedrive-php-sdk/compare/2.6.0...2.7.0
+[2.6.0]:         https://github.com/krizalys/onedrive-php-sdk/compare/2.5.1...2.6.0
+[2.5.1]:         https://github.com/krizalys/onedrive-php-sdk/compare/2.5.0...2.5.1
+[2.5.0]:         https://github.com/krizalys/onedrive-php-sdk/compare/2.4.2...2.5.0
 [2.4.2]:         https://github.com/krizalys/onedrive-php-sdk/compare/2.4.1...2.4.2
 [2.4.1]:         https://github.com/krizalys/onedrive-php-sdk/compare/2.4.0...2.4.1
 [2.4.0]:         https://github.com/krizalys/onedrive-php-sdk/compare/2.3.0...2.4.0

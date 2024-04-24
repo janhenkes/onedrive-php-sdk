@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Test\Functional\Krizalys\Onedrive\Proxy;
 
 use Krizalys\Onedrive\Proxy\DriveItemProxy;
@@ -20,7 +22,7 @@ class DriveProxyTest extends TestCase
 
     private static $root;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -46,7 +48,7 @@ class DriveProxyTest extends TestCase
             $driveItem = $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $driveItem = self::$defaultDrive->getDriveItemById($driveItem->id);
@@ -61,7 +63,7 @@ class DriveProxyTest extends TestCase
             $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $driveItem = self::$defaultDrive->getDriveItemByPath("/{$sandbox->name}/Test file");

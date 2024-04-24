@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Test\Unit\Krizalys\Onedrive\Proxy;
 
 use Krizalys\Onedrive\Proxy\FileProxy;
@@ -16,10 +18,18 @@ class FileProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $hashes = $this->createMock(Hashes::class);
-        $hashes->method('getCrc32Hash')->willReturn('1234');
+
+        $hashes
+            ->expects($this->atLeastOnce())
+            ->method('getCrc32Hash')
+            ->willReturn('1234');
 
         $file = $this->createMock(File::class);
-        $file->method('getHashes')->willReturn($hashes);
+
+        $file
+            ->expects($this->atLeastOnce())
+            ->method('getHashes')
+            ->willReturn($hashes);
 
         $sut = new FileProxy($graph, $file);
         $this->assertInstanceOf(HashesProxy::class, $sut->hashes);
@@ -31,10 +41,14 @@ class FileProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $file = $this->createMock(File::class);
-        $file->method('getMimeType')->willReturn('mime/type');
+
+        $file
+            ->expects($this->atLeastOnce())
+            ->method('getMimeType')
+            ->willReturn('mime/type');
 
         $sut = new FileProxy($graph, $file);
-        $this->assertInternalType('string', $sut->mimeType);
+        $this->assertIsString($sut->mimeType);
         $this->assertSame('mime/type', $sut->mimeType);
     }
 }

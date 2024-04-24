@@ -7,17 +7,18 @@
  * that was distributed with this source code.
  *
  * @author    Christophe Vidal
- * @copyright 2008-2019 Christophe Vidal (http://www.krizalys.com)
+ * @copyright 2008-2023 Christophe Vidal (http://www.krizalys.com)
  * @license   https://opensource.org/licenses/BSD-3-Clause 3-Clause BSD License
  * @link      https://github.com/krizalys/onedrive-php-sdk
  */
+
+declare(strict_types=1);
 
 namespace Krizalys\Onedrive;
 
 use GuzzleHttp\Client as GuzzleHttpClient;
 use Krizalys\Onedrive\Definition\OperationDefinition;
 use Krizalys\Onedrive\Definition\Parameter\BodyParameterDefinition;
-use Krizalys\Onedrive\Definition\Parameter\HeaderParameterDefinition;
 use Krizalys\Onedrive\Definition\Parameter\QueryStringParameterDefinition;
 use Krizalys\Onedrive\Definition\ResourceDefinition;
 use Krizalys\Onedrive\Definition\ServiceDefinition;
@@ -128,16 +129,7 @@ class Onedrive
                 'content' => new ResourceDefinition([
                     'put' => new OperationDefinition(
                         new ParameterDefinitionCollection($parameterBuilder, []),
-                        new ParameterDefinitionCollection($parameterBuilder, [
-                            'contentType' => new HeaderParameterDefinition(
-                                new FlatInjector('Content-Type'),
-                                $scalarSerializer
-                            ),
-                            'Content-Type' => new HeaderParameterDefinition(
-                                new FlatInjector('Content-Type'),
-                                $orderBySerializer
-                            ),
-                        ]),
+                        new ParameterDefinitionCollection($parameterBuilder, []),
                         new ParameterDefinitionCollection($parameterBuilder, [
                             'conflictBehavior' => new QueryStringParameterDefinition(
                                 new FlatInjector('@microsoft.graph.conflictBehavior'),

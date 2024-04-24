@@ -7,10 +7,12 @@
  * that was distributed with this source code.
  *
  * @author    Christophe Vidal
- * @copyright 2008-2019 Christophe Vidal (http://www.krizalys.com)
+ * @copyright 2008-2023 Christophe Vidal (http://www.krizalys.com)
  * @license   https://opensource.org/licenses/BSD-3-Clause 3-Clause BSD License
  * @link      https://github.com/krizalys/onedrive-php-sdk
  */
+
+declare(strict_types=1);
 
 namespace Krizalys\Onedrive\Proxy;
 
@@ -72,12 +74,6 @@ class UploadSessionProxy extends EntityProxy
 
     /**
      * @var int
-     *      The type.
-     */
-    private $type;
-
-    /**
-     * @var int
      *      The chunk size, in bytes.
      */
     private $rangeSize;
@@ -95,7 +91,6 @@ class UploadSessionProxy extends EntityProxy
      *        The drive item resource definition.
      * @param mixed[string] $options
      *        The options. Supported options:
-     *          - `'type'` *(string)*: the MIME type of the uploaded file ;
      *          - `'range_size'` *(int)*: the range size, in bytes.
      *
      * @since 2.1.0
@@ -110,10 +105,6 @@ class UploadSessionProxy extends EntityProxy
         parent::__construct($graph, $uploadSession);
         $this->content                     = $content;
         $this->driveItemResourceDefinition = $driveItemResourceDefinition;
-
-        $this->type = array_key_exists('type', $options) ?
-            $options['type']
-            : null;
 
         $this->rangeSize = array_key_exists('range_size', $options) ?
             $options['range_size']
@@ -169,7 +160,7 @@ class UploadSessionProxy extends EntityProxy
     {
         $stream = $this->content instanceof Stream ?
             $this->content
-            : Psr7\stream_for($this->content);
+            : Psr7\Utils::streamFor($this->content);
 
         if ($this->rangeSize !== null) {
             $rangeSize = $this->rangeSize;
@@ -195,10 +186,6 @@ class UploadSessionProxy extends EntityProxy
                 'Content-Length' => $rangeSize,
                 'Content-Range'  => "bytes $rangeFirst-$rangeLast/$size",
             ];
-
-            if ($this->type !== null) {
-                $headers['Content-Type'] = $this->type;
-            }
 
             $response = $this
                 ->graph

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Test\Unit\Krizalys\Onedrive\Parameter\Injector;
 
 use Krizalys\Onedrive\Parameter\Injector\HierarchicalInjector;
@@ -17,13 +19,11 @@ class HierarchicalInjectorTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @expectedException \Exception
-     *
-     * @expectedExceptionMessage A hierarchical injector path cannot be empty
-     */
     public function testInjectWithEmptyPathThrowsExpectedException()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('A hierarchical injector path cannot be empty');
+
         $sut = new HierarchicalInjector([]);
         $sut->inject([], 'Irrelevant');
     }

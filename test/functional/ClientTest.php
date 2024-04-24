@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Test\Functional\Krizalys\Onedrive;
 
 use Krizalys\Onedrive\Constant\SpecialFolderName;
@@ -30,7 +32,7 @@ class ClientTest extends TestCase
 
     private static $root;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -45,6 +47,40 @@ class ClientTest extends TestCase
             self::$password,
             $secret
         );
+    }
+
+    public function testConstructor()
+    {
+        $client = Onedrive::client(self::$clientId);
+
+        $values = self::authorize(
+            $client,
+            self::$username,
+            self::$password,
+            null
+        );
+
+        if (!array_key_exists('code', $values)) {
+            throw new \Exception();
+        }
+
+        $code   = $values['code'];
+        $secret = self::getConfig('SECRET');
+        $client->obtainAccessToken($secret, $code);
+        $state = $client->getState();
+
+        $client = Onedrive::client(
+            self::$clientId,
+            ['state' => $state]
+        );
+
+        $drives = $client->getDrives();
+        $actual = count($drives);
+        $this->assertGreaterThanOrEqual(1, $actual);
+
+        foreach ($drives as $drive) {
+            $this->assertDriveProxy($drive);
+        }
     }
 
     public function testAuthorizationRequest()
@@ -116,7 +152,13 @@ class ClientTest extends TestCase
      */
     public function testGetDriveByGroup()
     {
-        $drive = self::$client->getDriveByGroup(self::$defaultDrive->owner->user->id);
+        $groupId = $this->getConfig('GROUP_ID');
+
+        if (empty($groupId)) {
+            $this->markTestSkipped('No group ID set');
+        }
+
+        $drive = self::$client->getDriveByGroup($groupId);
 
         if ($drive == $null) {
             $this->markTestSkipped('No drive by group found');
@@ -130,7 +172,13 @@ class ClientTest extends TestCase
      */
     public function testGetDriveBySite()
     {
-        $drive = self::$client->getDriveBySite(self::$defaultDrive->owner->user->id);
+        $siteId = $this->getConfig('SITE_ID');
+
+        if (empty($siteId)) {
+            $this->markTestSkipped('No site ID set');
+        }
+
+        $drive = self::$client->getDriveBySite($siteId);
 
         if ($drive == $null) {
             $this->markTestSkipped('No drive by site found');
@@ -142,37 +190,16 @@ class ClientTest extends TestCase
     /**
      * @depends testGetRoot
      */
-    public function testGetDriveItemByIdWhenNotGivenDriveId()
+    public function testGetDriveItemById()
     {
         self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $driveItem = $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $driveItem = self::$client->getDriveItemById($driveItem->id);
-            $this->assertDriveItemProxy($driveItem);
-        });
-    }
-
-    /**
-     * @depends testGetRoot
-     */
-    public function testGetDriveItemByIdWhenGivenDriveId()
-    {
-        self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
-            $driveItem = $sandbox->upload(
-                'Test file',
-                'Test content',
-                ['contentType' => 'text/plain']
-            );
-
-            $driveItem = self::$client->getDriveItemById(
-                $driveItem->parentReference->driveId,
-                $driveItem->id
-            );
-
             $this->assertDriveItemProxy($driveItem);
         });
     }
@@ -186,7 +213,7 @@ class ClientTest extends TestCase
             $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $driveItem = self::$client->getDriveItemByPath("/{$sandbox->name}/Test file");
@@ -218,7 +245,7 @@ class ClientTest extends TestCase
     public function testGetShared()
     {
         $driveItems = self::$client->getShared();
-        $this->assertInternalType('array', $driveItems);
+        $this->assertIsArray($driveItems);
 
         foreach ($driveItems as $driveItem) {
             $this->assertDriveItemProxy($driveItem);
@@ -228,7 +255,7 @@ class ClientTest extends TestCase
     public function testGetRecent()
     {
         $driveItems = self::$client->getRecent();
-        $this->assertInternalType('array', $driveItems);
+        $this->assertIsArray($driveItems);
 
         foreach ($driveItems as $driveItem) {
             $this->assertDriveItemProxy($driveItem);

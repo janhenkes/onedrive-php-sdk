@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Test\Unit\Krizalys\Onedrive\Proxy;
 
 use Krizalys\Onedrive\Constant\PackageType;
@@ -15,10 +17,14 @@ class PackageProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $package = $this->createMock(Package::class);
-        $package->method('getType')->willReturn(PackageType::ONENOTE);
+
+        $package
+            ->expects($this->atLeastOnce())
+            ->method('getType')
+            ->willReturn(PackageType::ONENOTE);
 
         $sut = new PackageProxy($graph, $package);
-        $this->assertInternalType('string', $sut->type);
+        $this->assertIsString($sut->type);
         $this->assertSame(PackageType::ONENOTE, $sut->type);
     }
 }

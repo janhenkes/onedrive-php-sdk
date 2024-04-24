@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Test\Functional\Krizalys\Onedrive\Proxy;
 
 use Krizalys\Onedrive\Constant\ConflictBehavior;
@@ -25,7 +27,7 @@ class DriveItemProxyTest extends TestCase
 
     private static $root;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -61,14 +63,11 @@ class DriveItemProxyTest extends TestCase
         });
     }
 
-    /**
-     * @expectedException \Krizalys\Onedrive\Exception\ConflictException
-     *
-     * @expectedExceptionMessage There is already a drive item named "Test
-     *                           folder" in this folder
-     */
     public function testCreateFolderWhenExistingAndFailConflictBehavior()
     {
+        $this->expectException(\Krizalys\Onedrive\Exception\ConflictException::class);
+        $this->expectExceptionMessage('There is already a drive item named "Test folder" in this folder');
+
         self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->createFolder('Test folder');
 
@@ -147,7 +146,7 @@ class DriveItemProxyTest extends TestCase
                 $sandbox->upload(
                     "Test file #$i",
                     "Test content #$i",
-                    ['contentType' => 'text/plain']
+                    []
                 );
             }
 
@@ -177,7 +176,7 @@ class DriveItemProxyTest extends TestCase
             $driveItem = $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $driveItem->delete();
@@ -202,7 +201,7 @@ class DriveItemProxyTest extends TestCase
             $driveItem = $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $this->assertDriveItemProxy($driveItem);
@@ -214,19 +213,16 @@ class DriveItemProxyTest extends TestCase
         });
     }
 
-    /**
-     * @expectedException \Krizalys\Onedrive\Exception\ConflictException
-     *
-     * @expectedExceptionMessage There is already a drive item named "Test
-     *                           folder" in this folder
-     */
     public function testUploadStringWhenExistingAndFailConflictBehavior()
     {
+        $this->expectException(\Krizalys\Onedrive\Exception\ConflictException::class);
+        $this->expectExceptionMessage('There is already a drive item named "Test%20file" in this folder');
+
         self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $driveItem = $sandbox->upload(
@@ -243,16 +239,13 @@ class DriveItemProxyTest extends TestCase
             $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $driveItem = $sandbox->upload(
                 'Test file',
                 'Test content',
-                [
-                    'conflictBehavior' => ConflictBehavior::RENAME,
-                    'contentType'      => 'text/plain',
-                ]
+                ['conflictBehavior' => ConflictBehavior::RENAME]
             );
 
             $this->assertDriveItemProxy($driveItem);
@@ -270,16 +263,13 @@ class DriveItemProxyTest extends TestCase
             $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $driveItem = $sandbox->upload(
                 'Test file',
                 'Test content',
-                [
-                    'conflictBehavior' => ConflictBehavior::REPLACE,
-                    'contentType'      => 'text/plain',
-                ]
+                ['conflictBehavior' => ConflictBehavior::REPLACE]
             );
 
             $this->assertDriveItemProxy($driveItem);
@@ -301,7 +291,7 @@ class DriveItemProxyTest extends TestCase
             $driveItem = $sandbox->upload(
                 'Test file',
                 $content,
-                ['contentType' => 'text/plain']
+                []
             );
 
             $this->assertDriveItemProxy($driveItem);
@@ -316,19 +306,16 @@ class DriveItemProxyTest extends TestCase
         });
     }
 
-    /**
-     * @expectedException \Krizalys\Onedrive\Exception\ConflictException
-     *
-     * @expectedExceptionMessage There is already a drive item named "Test
-     *                           folder" in this folder
-     */
     public function testUploadStreamWhenExistingAndFailConflictBehavior()
     {
+        $this->expectException(\Krizalys\Onedrive\Exception\ConflictException::class);
+        $this->expectExceptionMessage('There is already a drive item named "Test%20file" in this folder');
+
         self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $content = fopen('php://memory', 'rb+');
@@ -352,7 +339,7 @@ class DriveItemProxyTest extends TestCase
             $sandbox->upload(
                 'test-file.txt',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $content = fopen('php://memory', 'rb+');
@@ -362,10 +349,7 @@ class DriveItemProxyTest extends TestCase
             $driveItem = $sandbox->upload(
                 'test-file.txt',
                 $content,
-                [
-                    'conflictBehavior' => ConflictBehavior::RENAME,
-                    'contentType'      => 'text/plain',
-                ]
+                ['conflictBehavior' => ConflictBehavior::RENAME]
             );
 
             $this->assertDriveItemProxy($driveItem);
@@ -386,7 +370,7 @@ class DriveItemProxyTest extends TestCase
             $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $content = fopen('php://memory', 'rb+');
@@ -396,10 +380,7 @@ class DriveItemProxyTest extends TestCase
             $driveItem = $sandbox->upload(
                 'Test file',
                 $content,
-                [
-                    'conflictBehavior' => ConflictBehavior::REPLACE,
-                    'contentType'      => 'text/plain',
-                ]
+                ['conflictBehavior' => ConflictBehavior::REPLACE]
             );
 
             $this->assertDriveItemProxy($driveItem);
@@ -422,10 +403,7 @@ class DriveItemProxyTest extends TestCase
             $uploadSession = $sandbox->startUpload(
                 'Test file',
                 $string,
-                [
-                    'contentType' => 'text/plain',
-                    'description' => 'Test description',
-                ]
+                ['description' => 'Test description']
             );
 
             $this->assertUploadSessionProxy($uploadSession);
@@ -440,19 +418,16 @@ class DriveItemProxyTest extends TestCase
         });
     }
 
-    /**
-     * @expectedException \Krizalys\Onedrive\Exception\ConflictException
-     *
-     * @expectedExceptionMessage There is already a drive item named "Test
-     *                           folder" in this folder
-     */
     public function testStartUploadStringWhenExistingAndFailConflictBehavior()
     {
+        $this->expectException(\Krizalys\Onedrive\Exception\ConflictException::class);
+        $this->expectExceptionMessage('There is already a drive item named "Test%20file" in this folder');
+
         self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $string = str_repeat("Test content\n", 100000);
@@ -471,7 +446,7 @@ class DriveItemProxyTest extends TestCase
             $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $string = str_repeat("Test content\n", 100000);
@@ -481,7 +456,6 @@ class DriveItemProxyTest extends TestCase
                 $string,
                 [
                     'conflictBehavior' => ConflictBehavior::RENAME,
-                    'contentType'      => 'text/plain',
                     'description'      => 'Test description',
                 ]
             );
@@ -504,7 +478,7 @@ class DriveItemProxyTest extends TestCase
             $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $string = str_repeat("Test content\n", 100000);
@@ -514,7 +488,6 @@ class DriveItemProxyTest extends TestCase
                 $string,
                 [
                     'conflictBehavior' => ConflictBehavior::REPLACE,
-                    'contentType'      => 'text/plain',
                     'description'      => 'Test description',
                 ]
             );
@@ -542,10 +515,7 @@ class DriveItemProxyTest extends TestCase
             $uploadSession = $sandbox->startUpload(
                 'Test file',
                 $stream,
-                [
-                    'contentType' => 'text/plain',
-                    'description' => 'Test description',
-                ]
+                ['description' => 'Test description']
             );
 
             $this->assertUploadSessionProxy($uploadSession);
@@ -563,19 +533,16 @@ class DriveItemProxyTest extends TestCase
         });
     }
 
-    /**
-     * @expectedException \Krizalys\Onedrive\Exception\ConflictException
-     *
-     * @expectedExceptionMessage There is already a drive item named "Test
-     *                           folder" in this folder
-     */
     public function testStartUploadStreamWhenExistingAndFailConflictBehavior()
     {
+        $this->expectException(\Krizalys\Onedrive\Exception\ConflictException::class);
+        $this->expectExceptionMessage('There is already a drive item named "Test%20file" in this folder');
+
         self::withOnedriveSandbox(self::$root, __METHOD__, function (DriveItemProxy $sandbox) {
             $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $content = str_repeat("Test content\n", 100000);
@@ -600,7 +567,7 @@ class DriveItemProxyTest extends TestCase
             $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $content = str_repeat("Test content\n", 100000);
@@ -613,7 +580,6 @@ class DriveItemProxyTest extends TestCase
                 $stream,
                 [
                     'conflictBehavior' => ConflictBehavior::RENAME,
-                    'contentType'      => 'text/plain',
                     'description'      => 'Test description',
                 ]
             );
@@ -639,7 +605,7 @@ class DriveItemProxyTest extends TestCase
             $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $content = str_repeat("Test content\n", 100000);
@@ -652,7 +618,6 @@ class DriveItemProxyTest extends TestCase
                 $stream,
                 [
                     'conflictBehavior' => ConflictBehavior::REPLACE,
-                    'contentType'      => 'text/plain',
                     'description'      => 'Test description',
                 ]
             );
@@ -678,7 +643,7 @@ class DriveItemProxyTest extends TestCase
             $driveItem = $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $destination = $sandbox->createFolder('Test destination');
@@ -702,7 +667,7 @@ class DriveItemProxyTest extends TestCase
             $driveItem = $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $destination = $sandbox->createFolder('Test destination');
@@ -745,7 +710,7 @@ class DriveItemProxyTest extends TestCase
             $driveItem = $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $destination = $sandbox->createFolder('Test destination');
@@ -759,7 +724,7 @@ class DriveItemProxyTest extends TestCase
                 return $this->getAndDecode($uri)->status == 'completed';
             });
 
-            $this->assertRegExp(self::$uriRegex, $uri);
+            $this->assertMatchesRegularExpression(self::$uriRegex, $uri);
             $driveItems = $destination->getChildren(['top' => 2]);
             $this->assertCount(1, $driveItems);
             $driveItem = $driveItems[0];
@@ -785,7 +750,7 @@ class DriveItemProxyTest extends TestCase
                 return $this->getAndDecode($uri)->status == 'completed';
             });
 
-            $this->assertRegExp(self::$uriRegex, $uri);
+            $this->assertMatchesRegularExpression(self::$uriRegex, $uri);
             $driveItems = $destination->getChildren(['top' => 2]);
             $this->assertCount(1, $driveItems);
             $driveItem = $driveItems[0];
@@ -805,7 +770,7 @@ class DriveItemProxyTest extends TestCase
             $driveItem = $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $permission = $driveItem->createLink($type);
@@ -822,7 +787,7 @@ class DriveItemProxyTest extends TestCase
             $driveItem = $sandbox->upload(
                 'Test file',
                 'Test content',
-                ['contentType' => 'text/plain']
+                []
             );
 
             $driveItem->createLink($type);

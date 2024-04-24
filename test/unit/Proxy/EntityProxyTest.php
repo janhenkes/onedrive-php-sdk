@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Test\Unit\Krizalys\Onedrive\Proxy;
 
 use Krizalys\Onedrive\Proxy\EntityProxy;
@@ -14,10 +16,14 @@ class EntityProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $entity = $this->createMock(Entity::class);
-        $entity->method('getId')->willReturn('1234');
+
+        $entity
+            ->expects($this->atLeastOnce())
+            ->method('getId')
+            ->willReturn('1234');
 
         $sut = new EntityProxy($graph, $entity);
-        $this->assertInternalType('string', $sut->id);
+        $this->assertIsString($sut->id);
         $this->assertSame('1234', $sut->id);
     }
 }

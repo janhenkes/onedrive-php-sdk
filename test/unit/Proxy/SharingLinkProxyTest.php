@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Test\Unit\Krizalys\Onedrive\Proxy;
 
 use Krizalys\Onedrive\Constant\SharingLinkScope;
@@ -18,10 +20,18 @@ class SharingLinkProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $identity = $this->createMock(Identity::class);
-        $identity->method('getDisplayName')->willReturn('Display Name');
+
+        $identity
+            ->expects($this->atLeastOnce())
+            ->method('getDisplayName')
+            ->willReturn('Display Name');
 
         $sharingLink = $this->createMock(SharingLink::class);
-        $sharingLink->method('getApplication')->willReturn($identity);
+
+        $sharingLink
+            ->expects($this->atLeastOnce())
+            ->method('getApplication')
+            ->willReturn($identity);
 
         $sut = new SharingLinkProxy($graph, $sharingLink);
         $this->assertInstanceOf(IdentityProxy::class, $sut->application);
@@ -33,10 +43,14 @@ class SharingLinkProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $sharingLink = $this->createMock(SharingLink::class);
-        $sharingLink->method('getScope')->willReturn(SharingLinkScope::ANONYMOUS);
+
+        $sharingLink
+            ->expects($this->atLeastOnce())
+            ->method('getScope')
+            ->willReturn(SharingLinkScope::ANONYMOUS);
 
         $sut = new SharingLinkProxy($graph, $sharingLink);
-        $this->assertInternalType('string', $sut->scope);
+        $this->assertIsString($sut->scope);
         $this->assertSame(SharingLinkScope::ANONYMOUS, $sut->scope);
     }
 
@@ -45,10 +59,14 @@ class SharingLinkProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $sharingLink = $this->createMock(SharingLink::class);
-        $sharingLink->method('getType')->willReturn(SharingLinkType::VIEW);
+
+        $sharingLink
+            ->expects($this->atLeastOnce())
+            ->method('getType')
+            ->willReturn(SharingLinkType::VIEW);
 
         $sut = new SharingLinkProxy($graph, $sharingLink);
-        $this->assertInternalType('string', $sut->type);
+        $this->assertIsString($sut->type);
         $this->assertSame(SharingLinkType::VIEW, $sut->type);
     }
 
@@ -57,10 +75,14 @@ class SharingLinkProxyTest extends TestCase
         $graph = $this->createMock(Graph::class);
 
         $sharingLink = $this->createMock(SharingLink::class);
-        $sharingLink->method('getWebUrl')->willReturn('http://ho.st/web-url');
+
+        $sharingLink
+            ->expects($this->atLeastOnce())
+            ->method('getWebUrl')
+            ->willReturn('http://ho.st/web-url');
 
         $sut = new SharingLinkProxy($graph, $sharingLink);
-        $this->assertInternalType('string', $sut->webUrl);
+        $this->assertIsString($sut->webUrl);
         $this->assertSame('http://ho.st/web-url', $sut->webUrl);
     }
 }

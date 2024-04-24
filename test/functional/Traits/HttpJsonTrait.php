@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Test\Functional\Krizalys\Onedrive\Traits;
 
 use GuzzleHttp\Client as GuzzleHttpClient;
@@ -10,7 +12,7 @@ trait HttpJsonTrait
 
     private function getAndDecode($uri)
     {
-        if ($httpClient === null) {
+        if ($this->httpClient === null) {
             $this->httpClient = new GuzzleHttpClient();
         }
 
